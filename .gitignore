@@ -15,5 +15,5 @@ node_modules
 # .DS_Store is only for Mac users
 **/.DS_Store
 
-
+# Readme file for development use only
 README.md
