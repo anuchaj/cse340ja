@@ -1,6 +1,209 @@
+@import url('https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,700;1,500&family=Montserrat:wght@400;700&family=Open+Sans:wght@400;600&family=Roboto:wght@300;400;700&display=swap');
+
+/* Prevent adjustments of font size after orientation changes in IE on Windows Phone and in iOS.  */
+html {-webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%;}
+
+/*----------- apply a natural box layout model to all elements --------------*/
+* { -moz-box-sizing: border-box; -webkit-box-sizing: border-box; box-sizing: border-box; }
+
+
 /******* Change Box Model ***************/
 *,
 *:before,
 *:after {
   box-sizing: border-box;
 }
+
+/* Root fonts and colors */
+:root {
+    --main-color: #021d13;
+    --second-color: #F4F4F4;
+    --accent: #1E90FF;
+    --header-font: "Lora", "Roboto", serif;
+    --paragraph-font: "Montserrat", "Open Sans", sans-serif;
+}
+
+body {
+  margin: 20px;
+}
+
+#top-header {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.siteName {
+  grid-column: 1 / 1;
+  grid-row: 1;
+  font-size: large;
+}
+
+#tools {
+  grid-column: 2 / 2;
+  grid-row: 1;
+}
+
+a {
+  text-decoration: none;
+}
+
+#tools a, .siteName a {
+  color: var(--main-color);
+}
+
+nav {
+  background-color: #021d13;
+  color: white;
+}
+
+.links {
+  list-style-type: none;
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  background-color: transparent;
+  color: white;
+  margin: 5px;
+  padding: 5px;
+}
+
+nav .links li {
+  text-decoration: none;
+}
+
+
+/* Index inside */
+.main-content {
+  display: flex;
+  flex-direction: column;
+}
+
+.display-banner {
+  position: relative;
+  width: 500px;
+  height: 400px;
+}
+
+.dmc-delorean, .main-img {
+  position: absolute;
+  width: 300px;
+}
+
+.dmc-delorean {
+  top: 0;
+  left: 0;
+  z-index: 2;
+  color: var(--accent);
+  padding: 10px;
+  background-color: rgba(240, 240, 240, 0.8);
+}
+
+.dmc-delorean button {
+  background-color: var(--accent);
+  color: white;
+  margin: 10px;
+  padding: 10px;
+}
+
+.main-img {
+  top: 80px;
+  left: 150px;
+  z-index: 1;
+}
+
+
+/* Upgrades */
+.upgrades {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.upgrades h2 {
+  grid-column: 1 / 2;
+  grid-row: 1 / 1;
+  margin: 0;
+}
+
+.flux {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: #1E90FF;
+  color: white;
+  padding: 10px;
+  grid-column: 1 / 1;
+  grid-row: 2 / 2;
+}
+
+.flame {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: #1E90FF;
+  color: white;
+  padding: 10px;
+  grid-column: 2 / 2;
+  grid-row: 2 / 2;
+}
+
+.bumper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: #1E90FF;
+  color: white;
+  padding: 10px;
+  grid-column: 1 / 1;
+  grid-row: 3 / 3;
+}
+
+.hub {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: #1E90FF;
+  color: white;
+  padding: 10px;
+  grid-column: 2 / 2;
+  grid-row: 3 / 3;
+}
+
+.flame a, .flux a, 
+.hub a, .bumper a {
+  color: white;
+  padding: 5px;
+}
+
+
+@media only screen and (min-width: 60rem) {
+  .main-content {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+  }
+
+  .main-content h1 {
+    grid-column: 1 / 2;
+  }
+
+  .display-banner {
+    grid-column: 1 / 2;
+    grid-row: 2 / 2;
+  }
+
+  .upgrades {
+    grid-column: 1 / 1;
+    grid-row: 3 / 3;
+  }
+
+  .reviews {
+    grid-column: 2 / 2;
+    grid-row: 3 / 3;
+    padding: 5px;
+  }
+
+}
+
