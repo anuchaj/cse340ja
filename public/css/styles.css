@@ -72,6 +72,10 @@ nav .links li {
   text-decoration: none;
 }
 
+.links li a {
+  color: white;
+}
+
 
 /* Index inside */
 .main-content {
