@@ -18,7 +18,7 @@ html {-webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%;}
 :root {
     --main-color: #021d13;
     --second-color: #F4F4F4;
-    --accent: #1E90FF;
+    --accent: #043d2f;
     --header-font: "Lora", "Roboto", serif;
     --paragraph-font: "Montserrat", "Open Sans", sans-serif;
 }
@@ -100,7 +100,7 @@ nav .links li {
   z-index: 2;
   color: var(--accent);
   padding: 10px;
-  background-color: rgba(240, 240, 240, 0.8);
+  background-color: rgba(240, 240, 240, 0.9);
 }
 
 .dmc-delorean button {
@@ -135,29 +135,31 @@ nav .links li {
   display: flex;
   flex-direction: column;
   align-items: center;
-  background-color: #1E90FF;
   color: white;
   padding: 10px;
   grid-column: 1 / 1;
   grid-row: 2 / 2;
 }
 
+.flux, .flame, .bumper, .hub {
+  background-color: var(--accent);
+}
+
 .flame {
   display: flex;
   flex-direction: column;
   align-items: center;
-  background-color: #1E90FF;
   color: white;
   padding: 10px;
   grid-column: 2 / 2;
   grid-row: 2 / 2;
 }
 
+
 .bumper {
   display: flex;
   flex-direction: column;
   align-items: center;
-  background-color: #1E90FF;
   color: white;
   padding: 10px;
   grid-column: 1 / 1;
@@ -168,7 +170,6 @@ nav .links li {
   display: flex;
   flex-direction: column;
   align-items: center;
-  background-color: #1E90FF;
   color: white;
   padding: 10px;
   grid-column: 2 / 2;
