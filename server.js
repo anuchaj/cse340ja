@@ -35,8 +35,14 @@ app.use("/inv", inventoryRoute)
 
 // File Not Found Route - must be last route in list
 app.use(async (req, res, next) => {
-  next({status: 404, message: 'Sorry, we appear to have lost that page.'})
-})
+  let naVi = await utilities.getNav();
+  //next({status: 404, message: 'Sorry, we appear to have lost that page.'})
+  res.status(404).render("errors/error", {
+    title: "Page Not Found",
+    message: "Sorry, the page you are looking for does not exist.",
+    naVi,
+  });
+});
 
 //app.get("/", function(req, res){
 //  res.render("index", {title: "Home"})
@@ -47,9 +53,10 @@ app.use(async (req, res, next) => {
 * Place after all other middleware
 *************************/
 app.use(async (err, req, res, next) => {
+  console.error(err.stack);
   let nav = await utilities.getNav()
   console.error(`Error at: "${req.originalUrl}": ${err.message}`)
-  if(err.status == 404){ message = err.message} else {message = 'Oh no! There was a crash. Maybe try a different route?'}
+  if(err.status == 500){ message = err.message} else {message = 'Oh no! There was a crash. Maybe try a different route?'}
   res.render("errors/error", {
     title: err.status || 'Server Error',
     message,

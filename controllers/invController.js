@@ -19,4 +19,34 @@ invCont.buildByClassificationId = async function (req, res, next) {
   })
 }
 
+/* ***************************
+ *  Build inventory detail view
+ * ************************** */
+invCont.buildDetailView = async function (req, res, next) {
+  try {
+    const invId = req.params.inv_id;
+    const vehicleData = await invModel.getVehicleById(invId);
+    if (!vehicleData) {
+      return next(new Error("Vehicle not found"));
+    }
+    const grid = utilities.buildVehicleDetail(vehicleData);
+    const nav = await utilities.getNav();
+    res.render("inventory/vehicle-detail", {
+      title: `${vehicleData.inv_year} ${vehicleData.inv_make} ${vehicleData.inv_model}`,
+      nav,
+      grid,
+    });
+  } catch (err) {
+    next(err);
+  }
+}
+
+// Throw/trigger intentional error
+invCont.triggerError = function (req, res, next) {
+  throw new Error("Intentional server error for testing.");
+}
+
+
 module.exports = invCont
+// module.exports = {buildDetailView, triggerError, invCont};
+

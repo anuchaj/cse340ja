@@ -1,0 +1,28 @@
+
+/* Responsive behavior for smaller screens */
+@media (max-width: 600px) {
+
+    nav ul {
+        flex-direction: column; /* Stack vertically */
+        align-items: center; /* Center items */
+    }
+
+    nav li {
+        margin: 10px 0; /* Add vertical spacing */
+    }
+
+    nav a {
+        width: 100%;
+        text-align: center;
+        padding: 12px;
+    }
+    main div.main-content, div.reviews {
+        display: flex;
+        flex-direction: column;
+    }
+
+    div.display-banner {
+        width: 100%;
+    }
+
+}

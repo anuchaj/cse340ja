@@ -26,6 +26,9 @@ html {-webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%;}
 body {
   margin: 20px;
 }
+main {
+  margin: 10px;
+}
 
 #top-header {
   display: grid;
@@ -57,35 +60,41 @@ nav {
   color: white;
 }
 
-.links {
-  list-style-type: none;
+nav ul {
+  list-style: none;
   display: flex;
   align-items: center;
-  gap: 15px;
-  background-color: transparent;
-  color: white;
+  justify-content: center;
+  background-color: #1a1a1a;
+  flex-wrap: wrap; /* Allow wrapping if needed */
   margin: 5px;
   padding: 5px;
 }
 
-nav .links li {
-  text-decoration: none;
+nav li {
+  margin: 0 15px;
 }
 
-.links li a {
-  color: white;
+nav a {
+  display: block;
+  padding: 14px 20px;
+  text-decoration: none;
+  color: #ffffff;
+  font-weight: bold;
+  transition: background 0.3s ease;
+}
+
+nav a:hover,
+nav a:focus {
+  background-color: #333333;
+  border-radius: 5px;
 }
 
 
 /* Index inside */
-.main-content {
-  display: flex;
-  flex-direction: column;
-}
-
 .display-banner {
   position: relative;
-  width: 500px;
+  width: 700px;
   height: 400px;
 }
 
@@ -155,7 +164,6 @@ nav .links li {
   grid-row: 2 / 2;
 }
 
-
 .bumper {
   display: flex;
   flex-direction: column;
@@ -182,33 +190,66 @@ nav .links li {
   padding: 5px;
 }
 
+/* Vehicles details view */
+.vehicle-detail {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2rem;
+}
 
-@media only screen and (min-width: 60rem) {
-  .main-content {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 15px;
-  }
+.vehicle-image img {
+  max-width: 100%;
+  height: auto;
+}
 
-  .main-content h1 {
-    grid-column: 1 / 2;
-  }
+.vehicle-info {
+  flex: 1;
+  min-width: 300px;
+}
 
-  .display-banner {
-    grid-column: 1 / 2;
-    grid-row: 2 / 2;
-  }
+main ul {
+  list-style: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0px;
+  gap: 1.5rem;
+  flex-wrap: wrap; /* Allow wrapping if needed */
+}
+main ul li {
+  align-items: center;
+  justify-items: center;
+  margin-top: 5px;
+}
 
-  .upgrades {
-    grid-column: 1 / 1;
-    grid-row: 3 / 3;
-  }
+.main-content {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 15px;
+}
 
-  .reviews {
-    grid-column: 2 / 2;
-    grid-row: 3 / 3;
-    padding: 5px;
-  }
+.main-content h1 {
+  grid-column: 1 / 2;
+}
 
+.display-banner {
+  grid-column: 1 / 2;
+  grid-row: 2 / 2;
+}
+
+.upgrades {
+  grid-column: 1 / 1;
+  grid-row: 3 / 3;
+}
+
+main div.main-content div.reviews {
+  grid-column: 2 / 2;
+  grid-row: 3 / 3;
+  padding: 1rem;
+}
+
+main div .reviews ul {
+  display: block;
+  padding: 5px;
 }
 
