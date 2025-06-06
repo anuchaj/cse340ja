@@ -12,9 +12,11 @@ const app = express()
 const static = require("./routes/static")
 const baseController = require("./controllers/baseController")
 const inventoryRoute = require("./routes/inventoryRoute")
+const accountRoute = require("./routes/accountRoute")
 const utilities = require("./utilities/index")
 const session = require("express-session")
 const pool = require('./database/')
+const bodyParser = require("body-parser")
 
 
 /* ***********************
@@ -30,6 +32,9 @@ const pool = require('./database/')
   saveUninitialized: true,
   name: 'sessionId',
 }))
+
+app.use(bodyParser.json())
+app.use(bodyParser.urlencoded({ extended: true })) // for parsing application/x-www-form-urlencoded
 
 
 // Express Messages Middleware
@@ -58,6 +63,9 @@ app.get("/", utilities.handleErrors(baseController.buildHome))
 // Inventory routes
 app.use("/inv", inventoryRoute)
 
+// Account routes
+app.use("/account", accountRoute)
+
 // File Not Found Route - must be last route in list
 app.use(async (req, res, next) => {
   let nav = await utilities.getNav();
@@ -67,7 +75,6 @@ app.use(async (req, res, next) => {
     nav,
   });
 });
-
 
 /* ***********************
 * Express Error Handler Middleware

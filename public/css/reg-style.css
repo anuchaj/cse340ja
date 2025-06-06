@@ -1,0 +1,49 @@
+.form-container {
+      max-width: 400px;
+      margin: 2rem auto;
+      padding: 2rem;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      font-family: Arial, sans-serif;
+    }
+    .form-container h1 {
+      text-align: center;
+      margin-bottom: 1rem;
+    }
+    .form-container label {
+      display: block;
+      margin-top: 1rem;
+      font-weight: bold;
+    }
+    .form-container input {
+      width: 100%;
+      padding: 0.5rem;
+      margin-top: 0.25rem;
+      border: 1px solid #aaa;
+      border-radius: 4px;
+    }
+    .form-container button {
+      margin-top: 1.5rem;
+      width: 100%;
+      padding: 0.75rem;
+      background-color: #007bff;
+      color: #fff;
+      border: none;
+      border-radius: 20px;
+      font-size: 1rem;
+      cursor: pointer;
+    }
+    .form-container .toggle-password {
+      margin-top: 0.5rem;
+      text-align: right;
+      font-size: 0.9rem;
+      cursor: pointer;
+      color: #007bff;
+    }
+    .flash-message {
+      background-color: #ffe4e1;
+      padding: 0.75rem;
+      margin-bottom: 1rem;
+      color: #b22222;
+      border-radius: 4px;
+    }

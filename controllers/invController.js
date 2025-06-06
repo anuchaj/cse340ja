@@ -48,5 +48,4 @@ invCont.triggerError = function (req, res, next) {
 
 
 module.exports = invCont
-// module.exports = {buildDetailView, triggerError, invCont};
 
