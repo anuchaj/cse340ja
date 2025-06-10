@@ -1,4 +1,5 @@
 const { body, validationResult } = require("express-validator")
+const utilities = require("./index")
 const validate = {}
 
 validate.inventoryRules = () => [

@@ -1,6 +1,5 @@
 .login-container {
-  background-color: #2c3e50;
-  color: #fff;
+  background-color: #054718;
   max-width: 400px;
   margin: 3rem auto;
   padding: 2rem;
@@ -12,6 +11,7 @@
 .login-container h1 {
   text-align: center;
   margin-bottom: 1.5rem;
+  color: #fff;
 }
 
 .flash-message {
@@ -30,6 +30,7 @@
 
 .login-form label {
   margin: 0.5rem 0 0.25rem;
+  color: #fff;
 }
 
 .login-form input {
@@ -57,10 +58,11 @@
 .signup-text {
   text-align: center;
   margin-top: 1rem;
+  color: #fff;
 }
 
 .signup-text a {
-  color: #1abc9c;
+  color: #d7eeb2;
   text-decoration: none;
 }
 

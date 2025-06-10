@@ -20,7 +20,6 @@ async function getAccountByEmail(email) {
 * *************************** */
 async function registerAccount(account_firstname, account_lastname, account_email, account_password){
   try {
-    // const hashedPassword = await bcrypt.hash(account_password, 10)
     const sql = "INSERT INTO account (account_firstname, account_lastname, account_email, account_password, account_type) VALUES ($1, $2, $3, $4, 'Client') RETURNING *"
     return await pool.query(sql, [account_firstname, account_lastname, account_email, account_password])
   } catch (error) {

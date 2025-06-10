@@ -2,13 +2,15 @@
 <div class="add_inv">
   <h1>Add New Inventory Item</h1>
 
-  <% if (Array.isArray(errors) && errors.length > 0) { %>
-    <ul>
-      <% errors.forEach(error => { %>
-        <li><%= error.msg %></li>
-      <% }) %>
-    </ul>
+
+  <% if (messages.error) { %>
+    <div class="error"><%= messages.error %></div>
   <% } %>
+  <% if (messages.success) { %>
+    <div class="success"><%= messages.success %></div>
+  <% } %>
+
+
 
   <form action="/inv/add-inventory" method="POST">
     <label for="classification_id">Classification</label>

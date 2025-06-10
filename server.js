@@ -17,6 +17,8 @@ const utilities = require("./utilities/index")
 const session = require("express-session")
 const pool = require('./database/')
 const bodyParser = require("body-parser")
+const flash = require('connect-flash');
+const errorHandler = require("./middleware/errorHandler")
 
 
 /* ***********************
@@ -33,9 +35,10 @@ const bodyParser = require("body-parser")
   name: 'sessionId',
 }))
 
+app.use(flash())
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: true })) // for parsing application/x-www-form-urlencoded
-
+app.use(errorHandler)
 
 // Express Messages Middleware
 app.use(require('connect-flash')())

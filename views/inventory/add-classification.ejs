@@ -2,13 +2,10 @@
 <div class="add_class">
   <h1>Add New Classification</h1>
 
-  <% if (typeof errors !== 'undefined' && errors.length > 0) { %>
-    <ul>
-      <% errors.forEach(error => { %>
-        <li><%= error.msg %></li>
-      <% }) %>
-    </ul>
+  <% if (messages.error) { %>
+    <div class="error"><%= messages.error %></div>
   <% } %>
+ 
 
   <form action="/inv/add-classification" method="POST">
     <label for="classification_name">Classification Name</label>
@@ -20,6 +17,7 @@
       title="No spaces or special characters allowed"
       required
     >
+    <small>Classification name must not contain spaces or special characters.</small>
     <button type="submit">Add Classification</button>
   </form>
 </div>
