@@ -103,7 +103,7 @@ invCont.addClassification = async function (req, res, next) {
     const result = await invModel.addClassification(classification_name);
 
     if (result) {
-      req.flash("success", "New classification added successfully.");
+      req.flash("message", "New classification added successfully.");
       res.redirect("/inv");
     } else {
       req.flash("error", "Failed to add classification.");
@@ -170,7 +170,7 @@ invCont.addInventory = async function (req, res, next) {
     const result = await invModel.addInventory(req.body);
 
     if (result) {
-      req.flash("success", "Vehicle successfully added.");
+      req.flash("message", "Vehicle successfully added.");
       res.redirect("/inv");
     } else {
       req.flash("error", "Failed to add vehicle.");
