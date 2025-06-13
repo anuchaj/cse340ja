@@ -9,15 +9,12 @@ const regValidate = require('../utilities/account-validation')
 // Route to build login view
 router.get("/login", utilities.handleErrors(accountController.buildLogin))
 
-// Login POST process route 1
-// router.post("/login", utilities.handleErrors(accountController.loginAccount))
-
-// Process the login attempt
+// Process the login request
 router.post(
   "/login",
-  (req, res) => {
-    res.status(200).send('login process')
-  }
+  regValidate.loginRules(),
+  regValidate.checkLoginData,
+  utilities.handleErrors(accountController.accountLogin)
 )
 
 // GET Route to build registration view
@@ -30,6 +27,10 @@ router.post(
   regValidate.checkRegData,
   utilities.handleErrors(accountController.registerAccount)
 )
+
+// Route to user account management view
+router.get("/user", utilities.handleErrors(accountController.userAccount))
+
 
 
 module.exports = router

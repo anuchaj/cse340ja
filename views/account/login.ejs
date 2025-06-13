@@ -1,9 +1,10 @@
 <main class="login-container">
   <h1><%= title %></h1>
 
-  <% if (message) { %>
+  <% if (typeof message !== 'undefined' && message) { %>
     <div class="flash-message"><%= message %></div>
   <% } %>
+  
 
   <form action="/account/login" method="POST" class="login-form" id="loginForm">
     <label for="account_email">Email:</label>

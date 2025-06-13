@@ -14,6 +14,11 @@
   color: #fff;
 }
 
+.dashboard_text {
+  color: white;
+  text-align: center;
+}
+
 .flash-message {
   background-color: #e74c3c;
   color: #fff;
