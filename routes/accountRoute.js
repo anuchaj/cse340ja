@@ -29,7 +29,11 @@ router.post(
 )
 
 // Route to user account management view
-router.get("/user", utilities.handleErrors(accountController.userAccount))
+// router.get("/user", utilities.handleErrors(accountController.userAccount))
+
+// Route to build management view
+router.get("/", utilities.checkLogin, utilities.handleErrors(accountController.buildManagement))
+
 
 
 

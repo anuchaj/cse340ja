@@ -1,0 +1,52 @@
+
+<div class="add_inv">
+  <h1>Edit Vehicle Details</h1>
+
+
+  <% if (messages.error) { %>
+    <div class="error"><%= messages.error %></div>
+  <% } %>
+  <% if (messages.success) { %>
+    <div class="success"><%= messages.success %></div>
+  <% } %>
+
+
+
+  <form action="/inv/edit-inventory" method="POST">
+    <input type="hidden" name="inv_id" value="<%= inv_id %>">
+
+    <label for="classification_id">Classification</label>
+    <%- classificationList %>
+
+    <label for="inv_make">Make</label>
+    <input type="text" name="inv_make" id="inv_make" value="<%= inv_make || '' %>" required>
+
+    <label for="inv_model">Model</label>
+    <input type="text" name="inv_model" id="inv_model" value="<%= inv_model || '' %>" required>
+
+    <label for="inv_year">Year</label>
+    <input type="number" name="inv_year" id="inv_year" value="<%= inv_year || '' %>" required>
+
+    <label for="inv_description">Description</label>
+    <input type="text" name="inv_description" id="inv_description" value="<%= inv_description || '' %>" required>
+
+    <label for="inv_image">Image Path</label>
+    <input type="text" name="inv_image" id="inv_image" value="<%= inv_image || '/images/vehicles/no-image.png' %>" required>
+
+    <label for="inv_thumbnail">Thumbnail Path</label>
+    <input type="text" name="inv_thumbnail" id="inv_thumbnail" value="<%= inv_thumbnail || '/images/vehicles/no-image-tn.png' %>" required>
+
+    <label for="inv_price">Price</label>
+    <input type="number" name="inv_price" id="inv_price" value="<%= inv_price || '' %>" step="0.01" required>
+
+    <label for="inv_miles">Miles</label>
+    <input type="number" name="inv_miles" id="inv_miles" value="<%= inv_miles || '' %>" required>
+
+    <label for="inv_color">Color</label>
+    <input type="text" name="inv_color" id="inv_color" value="<%= inv_color || '' %>" required>
+
+    <button type="submit">Update Vehicle</button>
+
+  </form>
+</div>
+

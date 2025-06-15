@@ -34,6 +34,7 @@ invModel.getInventoryByClassificationId = async function (classification_id) {
   }
 };
 
+
 /* ***************************
  *  Get a single vehicle by ID
  * ************************** */
@@ -46,6 +47,7 @@ invModel.getVehicleById = async function (inv_id) {
        WHERE inv_id = $1`,
       [inv_id]
     );
+    console.log("DB query result rows:", data.rows); // add this to debug
     return data.rows[0];
   } catch (error) {
     console.error("getVehicleById error:", error);
@@ -109,5 +111,62 @@ invModel.addInventory = async function (inventoryData) {
     throw error;
   }
 };
+
+
+/* ***************************
+ *  Update inventory item
+ * ************************** */
+invModel.updateInventory = async function (inventoryData) {
+  try {
+    const {
+      inv_id,
+      inv_make,
+      inv_model,
+      inv_description,
+      inv_image,
+      inv_thumbnail,
+      inv_price,
+      inv_year,
+      inv_miles,
+      inv_color,
+      classification_id,
+    } = inventoryData;
+
+    const sql = `UPDATE public.inventory SET
+      inv_make = $1,
+      inv_model = $2,
+      inv_description = $3,
+      inv_image = $4,
+      inv_thumbnail = $5,
+      inv_price = $6,
+      inv_year = $7,
+      inv_miles = $8,
+      inv_color = $9,
+      classification_id = $10
+      WHERE inv_id = $11
+    `;
+
+    const result = await pool.query(sql, [
+      inv_make,
+      inv_model,
+      inv_description,
+      inv_image,
+      inv_thumbnail,
+      inv_price,
+      inv_year,
+      inv_miles,
+      inv_color,
+      classification_id,
+      inv_id,
+    ]);
+
+    return result.rowCount; // > 0 if update was successful
+  } catch (error) {
+    console.error("updateInventory error:", error);
+    throw error;
+  }
+};
+
+
 
 module.exports = invModel;

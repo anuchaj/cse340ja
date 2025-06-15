@@ -114,7 +114,7 @@ async function accountLogin(req, res) {
       } else {
         res.cookie("jwt", accessToken, { httpOnly: true, secure: true, maxAge: 3600 * 1000 })
       }
-      return res.redirect("/account/user")
+      return res.redirect("/account") // return res.redirect("/account/user")
     }
     else {
       req.flash("message notice", "Please check your credentials and try again.")
@@ -130,10 +130,10 @@ async function accountLogin(req, res) {
   }
 }
 
-
 /* ****************************************
-*  Deliver user account management view
+*  Deliver user account view
 * *************************************** */
+/*
 async function userAccount(req, res, next) {
   let nav = await utilities.getNav()
   req.flash("message", "Welcome to your Dashboard!.")
@@ -144,7 +144,27 @@ async function userAccount(req, res, next) {
     message: req.flash("message") || null
   })
 }
+*/
 
-module.exports = { buildLogin, buildRegister, registerAccount, accountLogin, userAccount }
+/* ****************************************
+*  Deliver account management view
+* *************************************** */
+async function buildManagement(req, res, next) {
+  try {
+      let nav = await utilities.getNav()
+      req.flash("notice", "Welcome to Account management view.")
+      res.render("account/account-management", {
+        title: "Account Management",
+        nav,
+        // errors: null,
+        message: req.flash("notice") // || null
+      });
+    } catch (err) {
+      next(err);
+    }
+}
+
+
+module.exports = { buildLogin, buildRegister, registerAccount, accountLogin, buildManagement }
 
 
