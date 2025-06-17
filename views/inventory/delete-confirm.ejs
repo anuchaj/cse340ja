@@ -1,0 +1,27 @@
+<div class="add_inv">
+  <h1>Delete Vehicle Details</h1>
+
+  <% if (typeof message !== 'undefined' && message) { %>
+    <div class="flash-message"><%= message %></div>
+  <% } %>
+
+  <form action="/inv/delete" method="POST"> 
+    <p>The delete is permanent - Be sure you want to delete!</p>
+
+    <input type="hidden" name="inv_id" value="<%= inv_id %>">
+
+    <label for="inv_make">Make</label>
+    <input type="text" name="inv_make" id="inv_make" readonly value="<%= inv_make %>" required>
+
+    <label for="inv_model">Model</label>
+    <input type="text" name="inv_model" id="inv_model" readonly value="<%= inv_model %>" required>
+
+    <label for="inv_year">Year</label>
+    <input type="number" name="inv_year" id="inv_year" readonly value="<%= inv_year %>" required>
+
+    <label for="inv_price">Price</label>
+    <input type="number" name="inv_price" id="inv_price" readonly value="<%= inv_price %>" step="0.01" required>
+
+    <button type="submit">Delete Vehicle</button>
+  </form>
+</div>

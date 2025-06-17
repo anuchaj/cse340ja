@@ -250,9 +250,9 @@ invCont.buildEditInventoryView = async function (req, res, next) {
 };
 
 
-/* ***************************
- *  Update Inventory Data
- * ************************** */
+/* *********************************************************
+ *  Update Inventory Data or carry out the update proccess. 
+ * ********************************************************* */
 invCont.updateInventory = async function (req, res, next) {
   // Get the site navigation bar HTML
   let nav = await utilities.getNav()
@@ -346,6 +346,80 @@ invCont.updateInventory = async function (req, res, next) {
     })
   }
 }
+
+
+//  Build/deliver delete inventory view
+invCont.deleteInventoryView = async function (req, res, next) {
+  try {
+    const inv_id = parseInt(req.params.inv_id);
+    const nav = await utilities.getNav();
+
+    // ✅ Fetch the inventory item
+    const itemData = await invModel.getVehicleById(inv_id);
+    const itemName  = `${itemData.inv_make} ${itemData.inv_model}`
+
+    if (!itemData) {
+      req.flash("error", "Inventory item not found.");
+      return res.redirect("/inv");
+    }
+
+    // ✅ Send data to view
+    res.render("inventory/delete-confirm", {
+      title: `Delete ${itemName }`,
+      nav,
+      inv_id: itemData.inv_id,
+      inv_make: itemData.inv_make,
+      inv_model: itemData.inv_model,
+      inv_price: itemData.inv_price,
+      inv_year: itemData.inv_year,
+      classification_id: itemData.classification_id,
+      errors: null
+    });
+  } catch (err) {
+    next(err);
+  }
+};
+
+
+/* *********************************************************
+ *  Deletion is being carried out 
+ * ********************************************************* */
+invCont.deleteInventory = async function (req, res, next) {
+  let nav = await utilities.getNav()
+
+  const {
+    inv_id,
+    inv_make,
+    inv_model,
+    inv_price,
+    inv_year,
+    classification_id,
+  } = req.body
+
+  const deleteResult = await invModel.deleteInventory(inv_id)
+
+  const itemName = `${inv_make} ${inv_model}`
+
+  if (deleteResult > 0) {
+    req.flash("message", `The ${itemName} was successfully deleted.`)
+    res.redirect("/inv/")
+  } else {
+    req.flash("message", `Sorry, the deletion of ${itemName} failed.`)
+    res.status(501).render("inventory/delete-confirm", {
+      title: "Delete " + itemName,
+      nav,
+      message: req.flash("message"),
+      errors: null,
+      inv_id,
+      inv_make,
+      inv_model,
+      inv_year,
+      inv_price,
+      classification_id,
+    })
+  }
+}
+
 
 
 /* *********************************

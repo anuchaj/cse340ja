@@ -29,8 +29,10 @@ router.post(
   invController.addClassification
 )
 
-// Route to add-inventory view
+// Route to render inventory view for necessaery modification
 router.get("/add-inventory", invController.buildAddInventory)
+
+// Route to post add-inventory view
 router.post(
   "/add-inventory",
   invValidate.inventoryRules(),
@@ -41,12 +43,8 @@ router.post(
 // A new route that works with the URL in the JavaScript file
 router.get("/getInventory/:classification_id", utilities.handleErrors(invController.getInventoryJSON))
 
-
 // Route to render the edit form for a specific inventory item by ID
-router.get(
-  "/edit/:inv_id", 
-  utilities.handleErrors(invController.buildEditInventoryView)
-);
+router.get("/edit/:inv_id", utilities.handleErrors(invController.buildEditInventoryView));
 
 // Route to handle the update inventory form submission
 router.post(
@@ -56,6 +54,11 @@ router.post(
   utilities.handleErrors(invController.updateInventory) // Controller function to handle the update logic
 );
 
+// Route to render the edit form for a specific inventory item by ID for possible deletion
+router.get("/delete/:inv_id", utilities.handleErrors(invController.deleteInventoryView));
+
+// Route to call a controller function to carry out the delete
+router.post("/delete", utilities.handleErrors(invController.deleteInventory));
 
 
 // Trigger Intentional Error
