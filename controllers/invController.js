@@ -192,9 +192,9 @@ invCont.addInventory = async function (req, res, next) {
 };
 
 
-/* ***************************
+/* *********************************************
  *  Return Inventory by Classification As JSON
- * ************************** */
+ * ********************************************** */
 invCont.getInventoryJSON = async (req, res, next) => {
   const classification_id = parseInt(req.params.classification_id)
   const invData = await invModel.getInventoryByClassificationId(classification_id)
@@ -206,58 +206,30 @@ invCont.getInventoryJSON = async (req, res, next) => {
 }
 
 
-// Deliver the view for editing an inventory item
+// Deliver the view for editing an inventory item or Build render edit inventory view
 invCont.buildEditInventoryView = async function (req, res, next) {
   try {
-    const invId = req.params.inv_id;
-
-    // This typically fetches the inventory item from my model/database
-    const inventoryData = await invModel.getVehicleById(invId); // this function should exist in inventory model.
-
-    if (!inventoryData) {
-      return res.status(404).send("Inventory item not found");
-    }
-
-    res.render("inventory/edit-inventory", {
-      title: `Edit ${inventoryData.inv_make} ${inventoryData.inv_model}`,
-      inventory: inventoryData,
-    });
-  } catch (error) {
-    next(error);
-  }
-}
-
-
-/* *********************************
- *  Build edit inventory view
- * ******************************* */
-invCont.editInventoryView = async function (req, res, next) {
-  try {
-    // const inv_id = parseInt(req.params.inv_id);
-    const inv_id = parseInt(req.params.inv_id, 10);
-
+    const inv_id = parseInt(req.params.inv_id);
     const nav = await utilities.getNav();
 
-    // Fetch the single inventory item by inv_id
+    // ✅ Fetch the inventory item
     const itemData = await invModel.getVehicleById(inv_id);
 
-    console.log(itemData);
-
     if (!itemData) {
-      // Item not found, handle accordingly
       req.flash("error", "Inventory item not found.");
-      return res.redirect("/inv/management");
+      return res.redirect("/inv");
     }
 
-    // Build classification list dropdown HTML, with current classification selected
+    // ✅ Build the dropdown list with the current item's classification selected
     const classificationList = await utilities.buildClassificationList(itemData.classification_id);
 
     const name = `${itemData.inv_make} ${itemData.inv_model}`;
 
+    // ✅ Send data to view
     res.render("inventory/edit-inventory", {
       title: `Edit ${name}`,
       nav,
-      classificationList, // <-- Pass this to EJS to render dropdown
+      classificationList, // ✅ Render select list
       inv_id: itemData.inv_id,
       inv_make: itemData.inv_make,
       inv_model: itemData.inv_model,
@@ -278,45 +250,102 @@ invCont.editInventoryView = async function (req, res, next) {
 };
 
 
-
+/* ***************************
+ *  Update Inventory Data
+ * ************************** */
 invCont.updateInventory = async function (req, res, next) {
-  try {
-    const errors = validationResult(req);
-    const nav = await utilities.getNav();
-    const classificationList = await utilities.buildClassificationList(req.body.classification_id);
+  // Get the site navigation bar HTML
+  let nav = await utilities.getNav()
 
-    if (!errors.isEmpty()) {
-      return res.render("inventory/edit-inventory", {
-        title: "Edit Vehicle",
-        nav,
-        classificationList,
-        ...req.body,
-        messages: req.flash(),
-        errors: errors.array(),
-      });
-    }
+  // Destructure updated vehicle data from the request body
+  const {
+    inv_id,
+    inv_make,
+    inv_model,
+    inv_description,
+    inv_image,
+    inv_thumbnail,
+    inv_price,
+    inv_year,
+    inv_miles,
+    inv_color,
+    classification_id,
+  } = req.body
 
-    const result = await invModel.updateInventory(req.body);
 
-    if (result) {
-      req.flash("success", "Vehicle updated successfully.");
-      return res.redirect("/inv");
-    } else {
-      req.flash("error", "Failed to update vehicle.");
-      return res.render("inventory/edit-inventory", {
-        title: "Edit Vehicle",
-        nav,
-        classificationList,
-        ...req.body,
-        messages: req.flash(),
-        errors: [],
-      });
-    }
-  } catch (error) {
-    next(error);
+  // Safely extract a single integer classification_id
+  let classification = req.body.classification_id
+
+  if (Array.isArray(classification)) {
+    classification = classification[0]
   }
-};
 
+  const parsedClassificationId = parseInt(classification)
+
+  if (isNaN(parsedClassificationId)) {
+    req.flash("message", "Invalid classification selected.")
+    return res.redirect("back") // Or render the form with error
+  }
+
+
+  const parsedInvId = parseInt(inv_id)
+
+  const updateResult = await invModel.updateInventory(
+    parsedInvId,
+    inv_make,
+    inv_model,
+    inv_description,
+    inv_image,
+    inv_thumbnail,
+    inv_price,
+    inv_year,
+    inv_miles,
+    inv_color,
+    parsedClassificationId
+  )
+
+
+  // If update is successful
+  if (updateResult) {
+    // Create a display name for the updated item (e.g., "Toyota Camry")
+    const itemName = updateResult.inv_make + " " + updateResult.inv_model
+
+    // Flash a success message to the user
+    req.flash("message", `The ${itemName} was successfully updated.`)
+
+    // Redirect the user back to the main inventory management page
+    res.redirect("/inv/")
+  } else {
+    // If update fails, rebuild the classification dropdown with the selected option
+    const classificationSelect = await utilities.buildClassificationList(classification_id)
+
+    // Create a display name for the item based on submitted data
+    const itemName = `${inv_make} ${inv_model}`
+
+    // Flash a failure message
+    req.flash("message", "Sorry, the insert failed.")
+
+    // Render the edit-inventory view again with the current data and classification list
+    res.status(501).render("inventory/edit-inventory", {
+      title: "Edit " + itemName, // Set page title
+      nav, // Navigation bar HTML
+      classificationList: classificationSelect, // Dropdown list
+      errors: null, // No validation errors passed here
+      // Refill the form with the data the user submitted
+      inv_id,
+      inv_make,
+      inv_model,
+      inv_year,
+      inv_description,
+      inv_image,
+      inv_thumbnail,
+      inv_price,
+      inv_miles,
+      inv_color,
+      classification_id
+    })
+  }
+}
 
 
 /* *********************************
@@ -327,37 +356,3 @@ invCont.triggerError = function (req, res, next) {
 };
 
 module.exports = invCont;
-
-
-
-/* ***************************
- *  Build edit inventory view
- * ************************** */
-/*
-invCont.editInventoryView = async function (req, res, next) {
-  const inv_id = parseInt(req.params.inv_id)
-  let nav = await utilities.getNav()
-
-  const itemData = await invModel.getInventoryById(inv_id)
-  
-  const classificationSelect = await utilities.buildClassificationList(itemData.classification_id)
-  const itemName = `${itemData.inv_make} ${itemData.inv_model}`
-  res.render("./inventory/edit-inventory", {
-    title: "Edit " + itemName,
-    nav,
-    classificationSelect: classificationSelect,
-    errors: null,
-    inv_id: itemData.inv_id,
-    inv_make: itemData.inv_make,
-    inv_model: itemData.inv_model,
-    inv_year: itemData.inv_year,
-    inv_description: itemData.inv_description,
-    inv_image: itemData.inv_image,
-    inv_thumbnail: itemData.inv_thumbnail,
-    inv_price: itemData.inv_price,
-    inv_miles: itemData.inv_miles,
-    inv_color: itemData.inv_color,
-    classification_id: itemData.classification_id
-  })
-}
-  */

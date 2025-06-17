@@ -2,8 +2,8 @@
 <div class="management_view">
   <h1>Inventory Management</h1>
 
-  <% if (messages.info) { %>
-    <div class="flash-message"><%= messages.info %></div>
+  <% if (typeof message !== 'undefined' && message) { %>
+    <div class="flash-message"><%= message %></div>
   <% } %>
 
 

@@ -3,16 +3,12 @@
   <h1>Edit Vehicle Details</h1>
 
 
-  <% if (messages.error) { %>
-    <div class="error"><%= messages.error %></div>
-  <% } %>
-  <% if (messages.success) { %>
-    <div class="success"><%= messages.success %></div>
+  <% if (typeof message !== 'undefined' && message) { %>
+    <div class="flash-message"><%= message %></div>
   <% } %>
 
 
-
-  <form action="/inv/edit-inventory" method="POST">
+  <form action="/inv/edit-inventory" id="updateForm" method="POST">
     <input type="hidden" name="inv_id" value="<%= inv_id %>">
 
     <label for="classification_id">Classification</label>
@@ -45,8 +41,13 @@
     <label for="inv_color">Color</label>
     <input type="text" name="inv_color" id="inv_color" value="<%= inv_color || '' %>" required>
 
-    <button type="submit">Update Vehicle</button>
+    <button type="submit" disabled>Update Vehicle</button>
+    <input type="hidden" name="inv_id"
+    <% if(locals.inv_id) { %> value="<%= locals.inv_id %>"
+    <% } %>>
 
   </form>
 </div>
+
+<script src="../../js/inv-update.js"></script>
 

@@ -48,14 +48,14 @@ router.get(
   utilities.handleErrors(invController.buildEditInventoryView)
 );
 
-
 // Route to handle the update inventory form submission
 router.post(
   "/edit-inventory",
-  invValidate.inventoryRules(), // validation middleware
-  invValidate.checkInventoryData, // Validation result handler
-  utilities.handleErrors(invController.updateInventory) // update handler in controller
+  invValidate.inventoryRules(), // validation middleware; apply validation rules to the update form
+  invValidate.checkUpdateData, // Validation result handler; Handle validation errors and send data back to the edit view
+  utilities.handleErrors(invController.updateInventory) // Controller function to handle the update logic
 );
+
 
 
 // Trigger Intentional Error
