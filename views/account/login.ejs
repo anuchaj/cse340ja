@@ -4,7 +4,13 @@
   <% if (typeof message !== 'undefined' && message) { %>
     <div class="flash-message"><%= message %></div>
   <% } %>
-  
+  <% if (errors) { %>
+    <ul class="errors">
+      <% errors.forEach(error => { %>
+        <li><%= error.msg %></li>
+      <% }) %>
+    </ul>
+  <% } %>
 
   <form action="/account/login" method="POST" class="login-form" id="loginForm">
     <label for="account_email">Email:</label>

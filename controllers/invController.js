@@ -107,7 +107,7 @@ invCont.addClassification = async function (req, res, next) {
 
     if (result) {
       req.flash("message", "New classification added successfully.");
-      res.redirect("/inv");
+      res.redirect("/inv/management");
     } else {
       req.flash("error", "Failed to add classification.");
       res.render("inventory/add-classification", {
@@ -174,7 +174,7 @@ invCont.addInventory = async function (req, res, next) {
 
     if (result) {
       req.flash("message", "Vehicle successfully added.");
-      res.redirect("/inv");
+      res.redirect("/inv/management");
     } else {
       req.flash("error", "Failed to add vehicle.");
       res.render("inventory/add-inventory", {
@@ -217,7 +217,7 @@ invCont.buildEditInventoryView = async function (req, res, next) {
 
     if (!itemData) {
       req.flash("error", "Inventory item not found.");
-      return res.redirect("/inv");
+      return res.redirect("/inv/management");
     }
 
     // ✅ Build the dropdown list with the current item's classification selected
@@ -287,7 +287,6 @@ invCont.updateInventory = async function (req, res, next) {
     return res.redirect("back") // Or render the form with error
   }
 
-
   const parsedInvId = parseInt(inv_id)
 
   const updateResult = await invModel.updateInventory(
@@ -304,7 +303,6 @@ invCont.updateInventory = async function (req, res, next) {
     parsedClassificationId
   )
 
-
   // If update is successful
   if (updateResult) {
     // Create a display name for the updated item (e.g., "Toyota Camry")
@@ -314,7 +312,7 @@ invCont.updateInventory = async function (req, res, next) {
     req.flash("message", `The ${itemName} was successfully updated.`)
 
     // Redirect the user back to the main inventory management page
-    res.redirect("/inv/")
+    res.redirect("/inv/management")
   } else {
     // If update fails, rebuild the classification dropdown with the selected option
     const classificationSelect = await utilities.buildClassificationList(classification_id)
@@ -360,7 +358,7 @@ invCont.deleteInventoryView = async function (req, res, next) {
 
     if (!itemData) {
       req.flash("error", "Inventory item not found.");
-      return res.redirect("/inv");
+      return res.redirect("/inv/management");
     }
 
     // ✅ Send data to view
@@ -379,7 +377,6 @@ invCont.deleteInventoryView = async function (req, res, next) {
     next(err);
   }
 };
-
 
 /* *********************************************************
  *  Deletion is being carried out 
@@ -402,7 +399,7 @@ invCont.deleteInventory = async function (req, res, next) {
 
   if (deleteResult > 0) {
     req.flash("message", `The ${itemName} was successfully deleted.`)
-    res.redirect("/inv/")
+    res.redirect("/inv/management")
   } else {
     req.flash("message", `Sorry, the deletion of ${itemName} failed.`)
     res.status(501).render("inventory/delete-confirm", {
@@ -419,8 +416,6 @@ invCont.deleteInventory = async function (req, res, next) {
     })
   }
 }
-
-
 
 /* *********************************
  * Trigger intentional error for testing

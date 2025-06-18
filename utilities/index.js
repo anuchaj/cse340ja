@@ -1,4 +1,5 @@
 const jwt = require("jsonwebtoken")
+const { body, validationResult } = require('express-validator')
 require("dotenv").config()
 const invModel = require("../models/inventory-model")
 const Util = {}
@@ -144,6 +145,74 @@ Util.checkJWTToken = (req, res, next) => {
  }
 
 
+// Middleware to check JWT and account type
+Util.checkEmployeeOrAdmin = async function (req, res, next) {
+  const token = req.cookies.jwt
+  console.log('JWT Token:', token) // Debug: Log the token
+  if (!token) {
+    let nav = await Util.getNav(req, res, next) // Get navigation
+    res.locals.message = 'Please log in with an Employee or Admin account'
+    return res.render('account/login', {
+      title: 'Login', // Add title
+      nav, // Add nav
+      errors: null,
+      message: res.locals.message
+    })
+  }
+
+  try {
+    const decoded = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET)
+    if (decoded.account_type === 'Employee' || decoded.account_type === 'Admin') {
+      next()
+    } else {
+      let nav = await Util.getNav(req, res, next) // Get navigation
+      res.locals.message = 'Access restricted to Employee or Admin accounts'
+      res.render('account/login', {
+        title: 'Login', // Add title
+        nav, // Add nav
+        errors: null,
+        message: res.locals.message
+      })
+    }
+  } catch (err) {
+    let nav = await Util.getNav(req, res, next) // Get navigation
+    res.locals.message = 'Invalid or expired session'
+    res.render('account/login', {
+      title: 'Login', // Add title
+      nav, // Add nav
+      errors: null,
+      message: res.locals.message
+    })
+  }
+}
+
+// Validation middleware for account update
+Util.validateAccountUpdate = [
+  body('account_firstname').trim().notEmpty().withMessage('First name is required'),
+  body('account_lastname').trim().notEmpty().withMessage('Last name is required'),
+  body('account_email')
+    .trim()
+    .isEmail()
+    .withMessage('Valid email is required')
+    .normalizeEmail(),
+]
+
+// Validation middleware for password change
+Util.validatePasswordChange = [
+  body('account_password')
+    .trim()
+    .isLength({ min: 12 })
+    .withMessage('Password must be at least 12 characters')
+    .matches(/[0-9]/)
+    .withMessage('Password must contain a number')
+    .matches(/[A-Z]/)
+    .withMessage('Password must contain an uppercase letter')
+    .matches(/[a-z]/)
+    .withMessage('Password must contain a lowercase letter')
+    .matches(/[!@#$%^&*]/)
+    .withMessage('Password must contain a special character'),
+]
+
 
  // Handle errors
 //function handleErrors(fn) {
@@ -159,8 +228,8 @@ Util.checkJWTToken = (req, res, next) => {
  **************************************** */
 Util.handleErrors = fn => (req, res, next) => Promise.resolve(fn(req, res, next)).catch(next)
 
-
 module.exports = Util
+
 //module.exports = { buildVehicleDetail, other functions to be exported };
 
 

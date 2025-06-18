@@ -1,10 +1,19 @@
 <main class="login-container">
     <h1><%= title %></h1>
-  
-    <% if (typeof message !== 'undefined' && message) { %>
-        <div class="flash-message"><%= message %></div>
+    <% if (locals.message) { %>
+      <p class="message"><%= locals.message %></p>
     <% } %>
-
-    <h2 class="dashboard_text">You are logged in.</h2>
-    
+    <% if (locals.errors) { %>
+      <ul class="errors">
+        <% locals.errors.forEach(error => { %>
+          <li><%= error.msg %></li>
+        <% }) %>
+      </ul>
+    <% } %>
+    <h2>Welcome <%= locals.accountData.account_firstname %></h2>
+    <p><a href="/account/update/<%= locals.accountData.account_id %>">Update Account Information</a></p>
+    <% if (locals.accountData.account_type === 'Employee' || locals.accountData.account_type === 'Admin') { %>
+      <h3>Inventory Management</h3>
+      <p><a href="/inv/management">Manage Inventory</a></p>
+    <% } %>
 </main>

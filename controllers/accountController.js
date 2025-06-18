@@ -2,6 +2,7 @@ const accountModel = require("../models/account-model")
 const utilities  = require("../utilities/index")
 const bcrypt = require("bcryptjs")
 const jwt = require("jsonwebtoken")
+const { validationResult } = require("express-validator"); // ✅ Required for validation error handling
 require("dotenv").config()
 
 
@@ -29,6 +30,36 @@ async function buildRegister(req, res, next) {
     nav,
     errors: null,
     message: req.flash("message")[0] || null,
+  })
+}
+
+
+/* ****************************************
+*  Deliver account management view
+* *************************************** */
+async function buildManagement(req, res, next) {
+  let nav = await utilities.getNav()
+  res.render('account/account-management', {
+    title: 'Account Management',
+    nav,
+    accountData: res.locals.accountData,
+    errors: null,
+    message: res.locals.message || null,
+  })
+}
+
+
+/* ****************************************
+ *  Deliver update view
+ * *************************************** */
+async function buildUpdate(req, res, next) {
+  let nav = await utilities.getNav()
+  res.render('account/update', {
+    title: 'Update Account',
+    nav,
+    accountData: res.locals.accountData,
+    errors: null,
+    message: null,
   })
 }
 
@@ -85,7 +116,6 @@ async function registerAccount(req, res, next) {
   }
 }
 
-
 /* ****************************************
  *  Process login request
  * ************************************ */
@@ -114,7 +144,7 @@ async function accountLogin(req, res) {
       } else {
         res.cookie("jwt", accessToken, { httpOnly: true, secure: true, maxAge: 3600 * 1000 })
       }
-      return res.redirect("/account") // return res.redirect("/account/user")
+      return res.redirect("/account/account-management") // return res.redirect("/account/user")
     }
     else {
       req.flash("message notice", "Please check your credentials and try again.")
@@ -131,40 +161,130 @@ async function accountLogin(req, res) {
 }
 
 /* ****************************************
-*  Deliver user account view
-* *************************************** */
-/*
-async function userAccount(req, res, next) {
+ *  Process Account Update
+ * *************************************** */
+async function updateAccount(req, res, next) {
   let nav = await utilities.getNav()
-  req.flash("message", "Welcome to your Dashboard!.")
-  res.render("account/user", {
-    title: "My Account",
-    nav,
-    errors: null,
-    message: req.flash("message") || null
-  })
+  const errors = validationResult(req)
+  if (!errors.isEmpty()) {
+    return res.render('account/update', {
+      title: 'Update Account',
+      nav,
+      accountData: res.locals.accountData,
+      errors: errors.array(),
+      message: 'Please correct the errors below',
+    })
+  }
+
+  const { account_firstname, account_lastname, account_email, account_id } = req.body
+  const existingEmail = await accountModel.getAccountByEmail(account_email)
+  if (existingEmail && existingEmail.account_id != account_id) {
+    return res.render('account/update', {
+      title: 'Update Account',
+      nav,
+      accountData: res.locals.accountData,
+      errors: [{ msg: 'Email already exists' }],
+      message: 'Please correct the errors below',
+    })
+  }
+
+  const updateResult = await accountModel.updateAccount(
+    account_id,
+    account_firstname,
+    account_lastname,
+    account_email
+  )
+
+  if (updateResult) {
+    const updatedAccount = await accountModel.getAccountById(account_id)
+    const token = jwt.sign(updatedAccount, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '1h' })
+    res.cookie('jwt', token, { httpOnly: true, maxAge: 3600 * 1000 })
+    res.locals.accountData = updatedAccount
+    res.locals.message = 'Account updated successfully'
+    res.render('account/account-management', {
+      title: 'Account Management',
+      nav,
+      accountData: updatedAccount,
+      errors: null,
+      message: 'Account updated successfully',
+    })
+  } else {
+    res.render('account/update', {
+      title: 'Update Account',
+      nav,
+      accountData: res.locals.accountData,
+      errors: null,
+      message: 'Update failed. Please try again.',
+    })
+  }
 }
-*/
 
 /* ****************************************
-*  Deliver account management view
-* *************************************** */
-async function buildManagement(req, res, next) {
-  try {
-      let nav = await utilities.getNav()
-      req.flash("notice", "Welcome to Account management view.")
-      res.render("account/account-management", {
-        title: "Account Management",
-        nav,
-        // errors: null,
-        message: req.flash("notice") // || null
-      });
-    } catch (err) {
-      next(err);
-    }
+ *  Process Password Update
+ * *************************************** */
+async function updatePassword(req, res, next) {
+  let nav = await utilities.getNav()
+  const errors = validationResult(req)
+  if (!errors.isEmpty()) {
+    return res.render('account/update', {
+      title: 'Update Account',
+      nav,
+      accountData: res.locals.accountData,
+      errors: errors.array(),
+      message: 'Please correct the errors below',
+    })
+  }
+
+  const { account_password, account_id } = req.body
+  const hashedPassword = await bcrypt.hash(account_password, 10)
+  const updateResult = await accountModel.updatePassword(account_id, hashedPassword)
+
+  if (updateResult) {
+    const updatedAccount = await accountModel.getAccountById(account_id)
+    res.locals.message = 'Password updated successfully'
+    res.render('account/account-management', {
+      title: 'Account Management',
+      nav,
+      accountData: updatedAccount,
+      errors: null,
+      message: 'Password updated successfully',
+    })
+  } else {
+    res.render('account/update', {
+      title: 'Update Account',
+      nav,
+      accountData: res.locals.accountData,
+      errors: null,
+      message: 'Password update failed. Please try again.',
+    })
+  }
 }
 
+/* ****************************************
+ *  Process Logout
+ * *************************************** */
+async function logout(req, res, next) {
+  res.clearCookie('jwt')
+  let nav = await utilities.getNav()
+  res.render('index', {
+    title: 'Home',
+    nav,
+    errors: null,
+    message: 'Logged out successfully',
+  })
+}
 
-module.exports = { buildLogin, buildRegister, registerAccount, accountLogin, buildManagement }
+module.exports = {
+  buildLogin,
+  buildRegister,
+  buildManagement,
+  buildUpdate,
+  registerAccount,
+  accountLogin,
+  updateAccount,
+  updatePassword,
+  logout
+}
+
 
 
