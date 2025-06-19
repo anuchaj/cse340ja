@@ -33,14 +33,12 @@ router.post(
 router.get("/", utilities.checkLogin, utilities.handleErrors(accountController.buildManagement))
 
 // Route to build management view
-router.get('/account-management', utilities.checkJWTToken, accountController.buildManagement)
+router.get('/account-management', utilities.checkJWTToken, utilities.handleErrors(accountController.buildManagement))
 
 router.get('/update/:accountId', utilities.checkJWTToken, accountController.buildUpdate)
 router.post('/update/:accountId', utilities.checkJWTToken, validateAccountUpdate, accountController.updateAccount)
 router.post('/update-password/:accountId', utilities.checkJWTToken, validatePasswordChange, accountController.updatePassword)
 router.get('/logout', accountController.logout)
-
-
 
 
 module.exports = router

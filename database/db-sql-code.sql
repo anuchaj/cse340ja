@@ -13,6 +13,18 @@ CREATE TABLE public.classification (
 );
 
 
+-- Table structure for table 'reviews'
+CREATE TABLE IF NOT EXISTS public.reviews (
+    review_id SERIAL PRIMARY KEY,
+    inv_id INTEGER NOT NULL REFERENCES inventory(inv_id),
+    user_name VARCHAR(50) NOT NULL,
+    rating INTEGER NOT NULL CHECK (rating >= 1 AND rating <= 5),
+    comment TEXT NOT NULL CHECK (LENGTH(comment) >= 10 AND LENGTH(comment) <= 500),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT fk_inventory FOREIGN KEY (inv_id) REFERENCES inventory(inv_id) ON DELETE CASCADE
+);
+
+
 -- Table structure for table 'inventory'
 CREATE TABLE IF NOT EXISTS public.inventory
 (

@@ -47,6 +47,10 @@ main {
   grid-row: 1;
 }
 
+#tools li {
+  list-style: none;
+}
+
 a {
   text-decoration: none;
 }

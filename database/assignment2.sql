@@ -27,3 +27,9 @@ UPDATE inventory
 SET inv_image = REPLACE(inv_image, '/images/', '/images/vehicles/'),
     inv_thumbnail = REPLACE(inv_thumbnail, '/images/', '/images/vehicles/');
 
+-- Seven
+SELECT r.review_id, r.user_name, r.rating, r.comment, r.created_at, i.inv_make, i.inv_model
+FROM reviews r
+JOIN inventory i ON r.inv_id = i.inv_id
+WHERE i.inv_id = 8;
+

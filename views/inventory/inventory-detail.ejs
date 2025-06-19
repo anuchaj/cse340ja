@@ -1,17 +1,50 @@
-
-<main>
-   <!-- Vehicle Details -->
-  <h1><%= title %></h1>
-  <%- grid %>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title><%- title %></title>
+  <link href="/css/styles.css" rel="stylesheet" />
+</head>
+<body>
+  <%- nav %>
+  <main>
+    <h1><%= vehicle.inv_year %> <%= vehicle.inv_make %> <%= vehicle.inv_model %></h1>
     
     <!-- Error/Success Messages -->
-    
+    <% if (errors) { %>
+      <div class="alert-error">
+        <ul>
+          <% errors.forEach(error => { %>
+            <li><%= error.msg %></li>
+          <% }) %>
+        </ul>
+      </div>
+    <% } %>
+    <% if (flash.success) { %>
+      <div class="alert-success">
+        <%= flash.success %>
+      </div>
+    <% } %>
+
+    <!-- Vehicle Details -->
+    <div class="vehicle-grid">
+      <div>
+        <img src="<%= vehicle.inv_image %>" alt="<%= vehicle.inv_make %> <%= vehicle.inv_model %>" />
+      </div>
+      <div>
+        <p><strong>Price:</strong> $<%= vehicle.inv_price.toLocaleString() %></p>
+        <p><strong>Mileage:</strong> <%= vehicle.inv_miles.toLocaleString() %> miles</p>
+        <p><strong>Color:</strong> <%= vehicle.inv_color %></p>
+        <p class="mt-2"><%= vehicle.inv_description %></p>
+      </div>
+    </div>
 
     <!-- Review Submission Form -->
     <div class="mt-12">
       <h2>Write a Review</h2>
-      <form action="/inv/submit-review" method="POST">
-        <input type="hidden" name="vehicleId" value="<%= inv_id %>" />
+      <form action="/submit-review" method="POST">
+        <input type="hidden" name="vehicleId" value="<%= vehicle._id %>" />
         <div>
           <label for="userName">Your Name</label>
           <input type="text" id="userName" name="userName" required />
@@ -58,5 +91,9 @@
         <p>No reviews yet. Be the first to share your thoughts!</p>
       <% } %>
     </div>
-</main>
-
+  </main>
+  <footer>
+    <p>© CSE Motors 2025</p>
+  </footer>
+</body>
+</html>

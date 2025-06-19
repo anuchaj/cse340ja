@@ -3,6 +3,8 @@ const express = require("express")
 const router = new express.Router() 
 const invController = require("../controllers/invController")
 const utilities = require("../utilities/");
+const reviewController = require("../controllers/review-controller.js") // New import
+
 const classValidate = require("../utilities/classification-validation")
 const invValidate = require("../utilities/inventory-validation")
 
@@ -11,6 +13,12 @@ console.log('invController.buildDetailView:', invController.buildDetailView);
 
 // Route to build inventory by classification view
 router.get("/type/:classificationId", invController.buildByClassificationId);
+
+// Route to build inventory by classification view
+//router.get("/type/:classificationId", utilities.handleErrors(invController.buildByClassificationId))
+
+// Route to build inventory detail view
+//router.get("/detail/:inventoryId", utilities.handleErrors(invController.buildByInvId))
 
 // Route to build inventory by detail view
 router.get("/detail/:inv_id", invController.buildDetailView);
@@ -67,9 +75,12 @@ router.get('/delete/:inv_id', utilities.checkEmployeeOrAdmin, utilities.handleEr
 router.post("/delete", utilities.checkEmployeeOrAdmin, utilities.handleErrors(invController.deleteInventory));
 //router.post('/delete/:inv_id', utilities.checkEmployeeOrAdmin, utilities.handleErrors(invController.deleteInventory))
 
+// Review routes
+//router.post("/review", utilities.handleErrors(reviewController.submitReview))
+router.post("/submit-review", utilities.handleErrors(reviewController.submitReview));
 
 // Trigger Intentional Error
-router.get("/trigger-error", invController.triggerError);
+//router.get("/trigger-error", invController.triggerError);
 
 module.exports = router;
 

@@ -1,7 +1,8 @@
 const invModel = require("../models/inventory-model");
 const utilities = require("../utilities/");
+const reviewModel = require("../models/review-model"); // New import
 const { validationResult } = require("express-validator"); // ✅ Required for validation error handling
-
+// const sanitizeHtml = require("sanitize-html");
 
 const invCont = {};
 
@@ -29,27 +30,73 @@ invCont.buildByClassificationId = async function (req, res, next) {
   }
 };
 
-/* ***************************
+/* *************************************
  *  Build inventory detail view
- * ************************** */
+ *  and include reviews and review form
+ * ************************************** */
 invCont.buildDetailView = async function (req, res, next) {
   try {
-    const invId = req.params.inv_id;
-    const vehicleData = await invModel.getVehicleById(invId);
+    const inv_id = req.params.inv_id;
+    const vehicleData = await invModel.getVehicleById(inv_id);
     if (!vehicleData) {
       return next(new Error("Vehicle not found"));
     }
+    const reviews = await reviewModel.getReviewsByInventoryId(inv_id);
     const grid = utilities.buildVehicleDetail(vehicleData);
     const nav = await utilities.getNav();
     res.render("inventory/vehicle-detail", {
       title: `${vehicleData.inv_year} ${vehicleData.inv_make} ${vehicleData.inv_model}`,
       nav,
       grid,
+      inv_id: vehicleData.inv_id,
+      reviews,
+      errors: null,
+      success: req.flash("success"),
     });
   } catch (err) {
     next(err);
   }
 };
+
+
+/***********************************
+ * Vehicle/Inventory detail view
+ * and process reviews submisiom
+ ***********************************/
+invCont.submitReview = async function (req, res, next) {
+  try {
+    const errors = validationResult(req);
+    const nav = await utilities.getNav();
+    const { inv_id, user_name, rating, comment } = req.body;
+
+    if (!errors.isEmpty()) {
+      return res.render("inventory/vehicle-detail", {
+        title: "Vehicle Details",
+        nav,
+        messages: req.flash(),
+        errors: errors.array(),
+      });
+    }
+
+    console.log("Saving review:", { inv_id, user_name, rating, comment });
+    const result = await reviewModel.addReview(inv_id, user_name, parseInt(rating), comment);
+
+    if (result) {
+      req.flash("success", "Review submitted successfully!");
+      res.redirect(`/inventory/vehicle-detail/${inv_id}`);
+    } else {
+      req.flash("error", "Failed to add review.");
+      res.render("inventory/vehicle-detail", {
+        title: "Vehicles",
+        nav,
+        messages: req.flash(),
+      });
+    }
+  } catch (err) {
+    next(err);
+  }
+};
+
 
 /* ***************************
  *  Build management view
@@ -417,11 +464,5 @@ invCont.deleteInventory = async function (req, res, next) {
   }
 }
 
-/* *********************************
- * Trigger intentional error for testing
- * ******************************* */
-invCont.triggerError = function (req, res, next) {
-  throw new Error("Intentional server error for testing.");
-};
 
 module.exports = invCont;

@@ -1,16 +1,21 @@
 .login-container {
-  background-color: #054718;
-  max-width: 400px;
+  background-color: #9face6;
+  max-width: 990px;
   margin: 3rem auto;
   padding: 2rem;
   border-radius: 10px;
   box-shadow: 0 0 10px rgba(0,0,0,0.4);
   font-family: Arial, sans-serif;
 }
-
-.login-container h1 {
+ 
+.management-view{
+  background-color: white;
+  padding: 5px;
+}
+.management-view h1 {
   text-align: center;
   margin-bottom: 1.5rem;
+  background-color: #2980b9;
   color: #fff;
 }
 
