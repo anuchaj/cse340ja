@@ -69,7 +69,7 @@ invModel.addClassification = async function (classification_name) {
   }
 };
 
-/* ***************************
+/* ****************************
  *  Add a new inventory item
  * ************************** */
 invModel.addInventory = async function (inventoryData) {

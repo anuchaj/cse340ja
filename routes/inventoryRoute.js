@@ -76,8 +76,10 @@ router.post("/delete", utilities.checkEmployeeOrAdmin, utilities.handleErrors(in
 //router.post('/delete/:inv_id', utilities.checkEmployeeOrAdmin, utilities.handleErrors(invController.deleteInventory))
 
 // Review routes
-//router.post("/review", utilities.handleErrors(reviewController.submitReview))
+// router.post("/review", utilities.handleErrors(reviewController.submitReview))
+
 router.post("/submit-review", utilities.handleErrors(reviewController.submitReview));
+
 
 // Trigger Intentional Error
 //router.get("/trigger-error", invController.triggerError);

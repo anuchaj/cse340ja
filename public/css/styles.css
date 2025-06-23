@@ -257,3 +257,12 @@ main div .reviews ul {
   padding: 5px;
 }
 
+
+/* Reveiews styles */
+.review-stars {
+  display: flex;
+  gap: 0.25rem; /* Space between stars */
+}
+.review-stars .star {
+  flex-shrink: 0; /* Prevent shrinking */
+}

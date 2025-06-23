@@ -79,7 +79,7 @@ invCont.submitReview = async function (req, res, next) {
     }
 
     console.log("Saving review:", { inv_id, user_name, rating, comment });
-    const result = await reviewModel.addReview(inv_id, user_name, parseInt(rating), comment);
+    const result = await reviewModel.addReview(parseInt(inv_id), user_name, parseInt(rating), comment);
 
     if (result) {
       req.flash("success", "Review submitted successfully!");
@@ -441,7 +441,7 @@ invCont.deleteInventory = async function (req, res, next) {
   } = req.body
 
   const deleteResult = await invModel.deleteInventory(inv_id)
-
+ 
   const itemName = `${inv_make} ${inv_model}`
 
   if (deleteResult > 0) {

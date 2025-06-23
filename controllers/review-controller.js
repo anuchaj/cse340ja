@@ -6,7 +6,10 @@ const sanitizeHtml = require("sanitize-html");
 
 const reviewCont = {};
 
-// In review-controller.js
+/***********************************
+ * Vehicle/Inventory detail view
+ * and process reviews submisiom
+ ***********************************/
 reviewCont.submitReview = [
   body("user_name").trim().isLength({ min: 2, max: 50 }).withMessage("User name must be 2-50 characters"),
   body("rating").isInt({ min: 1, max: 5 }).withMessage("Rating must be between 1 and 5"),
@@ -15,7 +18,7 @@ reviewCont.submitReview = [
   async (req, res, next) => {
     console.log("Received review submission:", req.body); // Log incoming data
     const errors = validationResult(req);
-    const { inv_id, user_name, rating, comment } = req.body;
+    const { inv_id, user_name, rating, comment } = req.body; 
 
     if (!errors.isEmpty()) {
       console.log("Validation errors:", errors.array()); // Log validation errors
@@ -45,7 +48,7 @@ reviewCont.submitReview = [
 
     try {
       console.log("Saving review:", { inv_id, user_name, rating, comment });
-      await reviewModel.addReview(inv_id, user_name, parseInt(rating), comment);
+      await reviewModel.addReview(parseInt(inv_id), user_name, parseInt(rating), comment);
       req.flash("success", "Review submitted successfully!");
       res.redirect(`/inventory/vehicle-detail/${inv_id}`);
     } catch (error) {
