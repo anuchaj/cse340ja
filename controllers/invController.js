@@ -2,12 +2,12 @@ const invModel = require("../models/inventory-model");
 const utilities = require("../utilities/");
 const reviewModel = require("../models/review-model"); // New import
 const { validationResult } = require("express-validator"); // ✅ Required for validation error handling
-// const sanitizeHtml = require("sanitize-html");
+// const sanitizeHtml = require("sanitize-html"); // Not needed here as it's handled in review-controller.js
 
 const invCont = {};
 
 /* ***************************
- *  Build inventory by classification view
+ * Build inventory by classification view
  * ************************** */
 invCont.buildByClassificationId = async function (req, res, next) {
   try {
@@ -31,8 +31,8 @@ invCont.buildByClassificationId = async function (req, res, next) {
 };
 
 /* *************************************
- *  Build inventory detail view
- *  and include reviews and review form
+ * Build inventory detail view
+ * and include reviews and review form
  * ************************************** */
 invCont.buildDetailView = async function (req, res, next) {
   try {
@@ -51,7 +51,11 @@ invCont.buildDetailView = async function (req, res, next) {
       inv_id: vehicleData.inv_id,
       reviews,
       errors: null,
-      success: req.flash("success"),
+      success: req.flash("success"), // Pass flash success message
+      // Keep sticky data for review form in case of an error in the review form submission (though handled by reviewCont.submitReview)
+      user_name: null,
+      rating: null,
+      comment: null,
     });
   } catch (err) {
     next(err);
@@ -59,47 +63,11 @@ invCont.buildDetailView = async function (req, res, next) {
 };
 
 
-/***********************************
- * Vehicle/Inventory detail view
- * and process reviews submisiom
- ***********************************/
-invCont.submitReview = async function (req, res, next) {
-  try {
-    const errors = validationResult(req);
-    const nav = await utilities.getNav();
-    const { inv_id, user_name, rating, comment } = req.body;
-
-    if (!errors.isEmpty()) {
-      return res.render("inventory/vehicle-detail", {
-        title: "Vehicle Details",
-        nav,
-        messages: req.flash(),
-        errors: errors.array(),
-      });
-    }
-
-    console.log("Saving review:", { inv_id, user_name, rating, comment });
-    const result = await reviewModel.addReview(parseInt(inv_id), user_name, parseInt(rating), comment);
-
-    if (result) {
-      req.flash("success", "Review submitted successfully!");
-      res.redirect(`/inventory/vehicle-detail/${inv_id}`);
-    } else {
-      req.flash("error", "Failed to add review.");
-      res.render("inventory/vehicle-detail", {
-        title: "Vehicles",
-        nav,
-        messages: req.flash(),
-      });
-    }
-  } catch (err) {
-    next(err);
-  }
-};
-
+// REMOVED THE DUPLICATE invCont.submitReview FUNCTION FROM HERE
+// It is now solely handled by reviewController.js
 
 /* ***************************
- *  Build management view
+ * Build management view
  * ************************** */
 invCont.buildManagement = async function (req, res, next) {
   try {
@@ -117,7 +85,7 @@ invCont.buildManagement = async function (req, res, next) {
 };
 
 /* *********************************
- *  Build view to add classification
+ * Build view to add classification
  * ******************************* */
 invCont.buildAddClassification = async function (req, res, next) {
   try {
@@ -133,7 +101,7 @@ invCont.buildAddClassification = async function (req, res, next) {
 };
 
 /* *********************************
- *  Handle classification form submission
+ * Handle classification form submission
  * ******************************* */
 invCont.addClassification = async function (req, res, next) {
   try {
@@ -169,7 +137,7 @@ invCont.addClassification = async function (req, res, next) {
 };
 
 /* *********************************
- *  Build add inventory view
+ * Build add inventory view
  * ******************************* */
 invCont.buildAddInventory = async function (req, res, next) {
   try {
@@ -198,7 +166,7 @@ invCont.buildAddInventory = async function (req, res, next) {
 };
 
 /* *********************************
- *  Handle add inventory form submission
+ * Handle add inventory form submission
  * ******************************* */
 invCont.addInventory = async function (req, res, next) {
   try {
@@ -240,7 +208,7 @@ invCont.addInventory = async function (req, res, next) {
 
 
 /* *********************************************
- *  Return Inventory by Classification As JSON
+ * Return Inventory by Classification As JSON
  * ********************************************** */
 invCont.getInventoryJSON = async (req, res, next) => {
   const classification_id = parseInt(req.params.classification_id)
@@ -298,7 +266,7 @@ invCont.buildEditInventoryView = async function (req, res, next) {
 
 
 /* *********************************************************
- *  Update Inventory Data or carry out the update proccess. 
+ * Update Inventory Data or carry out the update proccess. 
  * ********************************************************* */
 invCont.updateInventory = async function (req, res, next) {
   // Get the site navigation bar HTML
@@ -426,7 +394,7 @@ invCont.deleteInventoryView = async function (req, res, next) {
 };
 
 /* *********************************************************
- *  Deletion is being carried out 
+ * Deletion is being carried out 
  * ********************************************************* */
 invCont.deleteInventory = async function (req, res, next) {
   let nav = await utilities.getNav()
@@ -441,7 +409,7 @@ invCont.deleteInventory = async function (req, res, next) {
   } = req.body
 
   const deleteResult = await invModel.deleteInventory(inv_id)
- 
+  
   const itemName = `${inv_make} ${inv_model}`
 
   if (deleteResult > 0) {

@@ -6,16 +6,9 @@ const reviewController = require("../controllers/review-controller.js") // New i
 
 const revValidate = require("../utilities/review-validation")
 
-
-// Review routes
-//router.post("/review", utilities.handleErrors(reviewController.submitReview))
-router.post("/submit-review", utilities.handleErrors(reviewController.submitReview));
-
-router.post(
-  "/submit-review",
-  revValidate.reviewRules(),
-  utilities.handleErrors(reviewController.submitReview)
-)
-
+// REMOVED DUPLICATE /submit-review routes from here.
+// The route definition for /submit-review will now solely reside in inventoryRoute.js
+// This ensures that the form action in vehicle-detail.ejs which is "/inv/submit-review"
+// correctly maps to a single route.
 
 module.exports = router;

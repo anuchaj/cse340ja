@@ -14,12 +14,6 @@ console.log('invController.buildDetailView:', invController.buildDetailView);
 // Route to build inventory by classification view
 router.get("/type/:classificationId", invController.buildByClassificationId);
 
-// Route to build inventory by classification view
-//router.get("/type/:classificationId", utilities.handleErrors(invController.buildByClassificationId))
-
-// Route to build inventory detail view
-//router.get("/detail/:inventoryId", utilities.handleErrors(invController.buildByInvId))
-
 // Route to build inventory by detail view
 router.get("/detail/:inv_id", invController.buildDetailView);
 
@@ -36,8 +30,6 @@ router.post(
   utilities.checkEmployeeOrAdmin,
   invController.addClassification
 )
-//router.post('/add-classification', utilities.checkEmployeeOrAdmin, invController.addClassification)
-
 
 // Route to render inventory view for necessaery modification
 router.get('/add-inventory', utilities.checkEmployeeOrAdmin, utilities.handleErrors(invController.buildAddInventory))
@@ -49,7 +41,6 @@ router.post(
   utilities.checkEmployeeOrAdmin,
   utilities.handleErrors(invController.addInventory)
 )
-// router.post('/add-inventory', utilities.checkEmployeeOrAdmin, invController.addInventory)
 
 
 // A new route that works with the URL in the JavaScript file
@@ -66,24 +57,17 @@ router.post(
   utilities.checkEmployeeOrAdmin,
   utilities.handleErrors(invController.updateInventory) // Controller function to handle the update logic
 );
-//router.post('/edit/:inv_id', utilities.checkEmployeeOrAdmin, invController.updateInventory)
 
 
 // Route to render the edit form for a specific inventory item by ID for possible deletion
 router.get('/delete/:inv_id', utilities.checkEmployeeOrAdmin, utilities.handleErrors(invController.deleteInventoryView))
 // Route to call a controller function to carry out the delete
 router.post("/delete", utilities.checkEmployeeOrAdmin, utilities.handleErrors(invController.deleteInventory));
-//router.post('/delete/:inv_id', utilities.checkEmployeeOrAdmin, utilities.handleErrors(invController.deleteInventory))
 
 // Review routes
-// router.post("/review", utilities.handleErrors(reviewController.submitReview))
+// KEEPING THIS ROUTE HERE AS IT'S THE ONE THE FORM IN vehicle-detail.ejs IS POINTING TO
+// AND IT'S A VALID ROUTE TO HANDLE REVIEW SUBMISSION FOR A SPECIFIC INVENTORY ITEM.
+router.post("/submit-review", reviewController.submitReview);
 
-router.post("/submit-review", utilities.handleErrors(reviewController.submitReview));
-
-
-// Trigger Intentional Error
-//router.get("/trigger-error", invController.triggerError);
 
 module.exports = router;
-
-

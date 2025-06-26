@@ -1,5 +1,6 @@
 // Importing validation functions from the express-validator library
 const { body, validationResult } = require("express-validator")
+const sanitizeHtml = require("sanitize-html"); // ADDED THIS IMPORT
 
 // Creating an object to hold validation functions
 const validate = {}
@@ -19,3 +20,4 @@ validate.reviewRules = () => [
 
 // Export the validate object so it can be used in other modules
 module.exports = validate
+
